@@ -1,5 +1,10 @@
 <?php
 
+namespace Cqrs;
+
+use Cqrs\Todo\TodoWasMarkedAsDone;
+use Cqrs\Todo\TodoWasPosted;
+use Cqrs\Todo\TodoWasReopened;
 
 class TodoProjector
 {
@@ -25,6 +30,19 @@ class TodoProjector
             ],
             [
                 'status' => $event->newStatus()->toString()
+            ]
+        );
+    }
+
+    public function onTodoWasReopened(TodoWasReopened $event)
+    {
+        $this->connection->update(
+            Table::TODO,
+            [
+                'id' => $event->todoId()->toString(),
+            ],
+            [
+                'status' => $event->totoStatus()->toString()
             ]
         );
     }

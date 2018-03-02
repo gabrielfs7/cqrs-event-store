@@ -1,5 +1,9 @@
 <?php
 
+namespace Cqrs;
+
+use \Iterator;
+
 class Stream
 {
     /**
@@ -8,28 +12,22 @@ class Stream
     private $streamName;
 
     /**
-     * @var \Iterator
+     * @var Iterator
      */
     private $events;
 
-    public function __construct(StreamName $streamName, \Iterator $events)
+    public function __construct(StreamName $streamName, Iterator $events)
     {
         $this->streamName = $streamName;
         $this->events = $events;
     }
 
-    /**
-     * @return StreamName
-     */
-    public function getStreamName()
+    public function getStreamName() : StreamName
     {
         return $this->streamName;
     }
 
-    /**
-     * @return Iterator
-     */
-    public function getEvents()
+    public function getEvents() : Iterator
     {
         return $this->events;
     }

@@ -1,5 +1,6 @@
 <?php
 
+namespace Cqrs;
 
 abstract class AggregateRoot
 {
@@ -7,7 +8,7 @@ abstract class AggregateRoot
 
     protected $recordedEvents = [];
 
-    protected static function reconstituteFromHistory(\Iterator $historyEvents)
+    protected static function reconstituteFromHistory(\Iterator $historyEvents) : self
     {
         $instance = new static();
         $instance->replay($historyEvents);
@@ -15,12 +16,11 @@ abstract class AggregateRoot
         return $instance;
     }
 
-    protected function replay(\Iterator $historyEvents)
+    protected function replay(\Iterator $historyEvents) : void
     {
-
     }
 
-    protected function recordThat(AggregateChanged $event)
+    protected function recordThat(AggregateChanged $event) : void
     {
         $this->version += 1;
         $this->recordedEvents[] = $event->withVersion($this->version);
@@ -28,7 +28,7 @@ abstract class AggregateRoot
         $this->apply($event);
     }
 
-    protected function apply(AggregateChanged $event)
+    protected function apply(AggregateChanged $event) : void
     {
         $handler = $this->determineEventHandlerMethodFor($event);
 
@@ -45,8 +45,5 @@ abstract class AggregateRoot
         $this->{$handler}($event);
     }
 
-    protected function determineEventHandlerMethodFor(AggregateChanged $event)
-    {
-
-    }
+    abstract protected function determineEventHandlerMethodFor(AggregateChanged $event);
 }

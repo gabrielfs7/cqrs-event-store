@@ -1,15 +1,20 @@
 <?php
 
+namespace Cqrs;
+
 class StreamName
 {
+    /**
+     * @var string
+     */
     private $name;
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }

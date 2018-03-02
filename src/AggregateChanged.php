@@ -1,15 +1,16 @@
 <?php
 
+namespace Cqrs;
+
 class AggregateChanged
 {
 
+    /**
+     * @var string
+     */
     protected $version;
 
-    /**
-     * @param $version
-     * @return $this
-     */
-    public function withVersion($version)
+    public function withVersion(string $version) : self
     {
         $this->version = $version;
 
