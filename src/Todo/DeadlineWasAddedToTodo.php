@@ -4,24 +4,26 @@ namespace Cqrs\Todo;
 
 use Cqrs\AggregateChanged;
 
-class TodoWasMarkedAsDone extends AggregateChanged
+use DateTime;
+
+class DeadlineWasAddedToTodo extends AggregateChanged
 {
 
     /**
-     * @var TodoStatus
+     * @var DateTime
      */
-    private $newStatus;
+    private $deadline;
 
     /**
      * @var TodoId
      */
     private $todoId;
 
-    public static function forTodo(TodoId $todoId) : self
+    public static function withDeadline(TodoId $todoId, DateTime $deadline) : self
     {
         $self = new self();
         $self->todoId = $todoId;
-        $self->newStatus = TodoStatus::done();
+        $self->deadline = $deadline;
 
         return $self;
     }
@@ -31,8 +33,8 @@ class TodoWasMarkedAsDone extends AggregateChanged
         return $this->todoId();
     }
 
-    public function newStatus() : TodoStatus
+    public function deadline() : DateTime
     {
-        return $this->newStatus;
+        return $this->deadline;
     }
 }

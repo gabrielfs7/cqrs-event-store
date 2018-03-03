@@ -23,6 +23,11 @@ class TodoStatus
         return new self(self::OPEN);
     }
 
+    public static function done() : self
+    {
+        return new self(self::OPEN);
+    }
+
     public function isDone() : bool
     {
         return $this->status == self::DONE;

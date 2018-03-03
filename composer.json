@@ -1,0 +1,17 @@
+{
+  "name" : "gabrielfs7/cqrs-event-sourcing",
+  "authors" : [
+    {
+      "name" : "Gabriel Felipe Soares",
+      "email" : "gabrielfs7@gmail.com"
+    }
+  ],
+  "require" : {
+    "php" : ">=7.0"
+  },
+  "autoload" : {
+    "psr-4" : {
+      "Cqrs\\" : "src/"
+    }
+  }
+}

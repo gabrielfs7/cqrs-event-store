@@ -8,10 +8,20 @@ use Cqrs\Todo\TodoWasReopened;
 
 class TodoProjector
 {
-    public function onTodoWasPosted(TodoWasPosted $event)
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
+    private $table = 'todo';
+
+    public function onTodoWasPosted(TodoWasPosted $event) : void
     {
         $this->connection->insert(
-            Table::TODO,
+            $this->table,
             [
                 'id' => $event->todoId()->toString(),
                 'assignee_id' => $event->assigneeId()->toString(),
@@ -21,27 +31,23 @@ class TodoProjector
         );
     }
 
-    public function onTodoWasMarkedAsDone(TodoWasMarkedAsDone $event)
+    public function onTodoWasMarkedAsDone(TodoWasMarkedAsDone $event) : void
     {
         $this->connection->update(
-            Table::TODO,
+            $this->table,
             [
                 'id' => $event->todoId()->toString(),
-            ],
-            [
                 'status' => $event->newStatus()->toString()
             ]
         );
     }
 
-    public function onTodoWasReopened(TodoWasReopened $event)
+    public function onTodoWasReopened(TodoWasReopened $event) : void
     {
         $this->connection->update(
-            Table::TODO,
+            $this->table,
             [
                 'id' => $event->todoId()->toString(),
-            ],
-            [
                 'status' => $event->totoStatus()->toString()
             ]
         );

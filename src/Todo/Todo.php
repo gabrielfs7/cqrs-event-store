@@ -6,6 +6,7 @@ use Cqrs\AggregateChanged;
 use Cqrs\AggregateRoot;
 use Cqrs\User\UserId;
 use Cqrs\Exception\CannotReopenTodo;
+use DateTime;
 
 class Todo extends AggregateRoot
 {
@@ -26,11 +27,16 @@ class Todo extends AggregateRoot
     private $status;
 
     /**
+     * @var DateTime
+     */
+    private $deadline;
+
+    /**
      * @var string
      */
     private $text;
 
-    public function post($text, UserId $assigneeId, TodoId $todoId) : self
+    public function post(string $text, UserId $assigneeId, TodoId $todoId) : self
     {
         $self = new self();
         $self->assertText($text);
@@ -44,6 +50,16 @@ class Todo extends AggregateRoot
         );
 
         return $self;
+    }
+
+    public function addDeadline(DateTime $deadline)
+    {
+        $this->recordThat(
+            DeadlineWasAddedToTodo::withDeadline(
+                $this->todoId,
+                $deadline
+            )
+        );
     }
 
     public function reopenTodo() : void
@@ -60,6 +76,14 @@ class Todo extends AggregateRoot
         );
     }
 
+
+    public function markAsDone() : void
+    {
+        $this->recordThat(
+            TodoWasMarkedAsDone::forTodo($this->todoId)
+        );
+    }
+
     protected function whenTodoWasPosted(TodoWasPosted $event) : void
     {
         $this->todoId = $event->todoId();
@@ -73,6 +97,11 @@ class Todo extends AggregateRoot
         $this->status = $event->newStatus();
     }
 
+    protected function whenDeadlineWasAddedToTodo(DeadlineWasAddedToTodo $event) : void
+    {
+        $this->deadline = $event->deadline();
+    }
+
     protected function determineEventHandlerMethodFor(AggregateChanged $event) : string
     {
         if ($event instanceof TodoWasMarkedAsDone) {
@@ -81,6 +110,10 @@ class Todo extends AggregateRoot
 
         if ($event instanceof TodoWasPosted) {
             return 'whenTodoWasPosted';
+        }
+
+        if ($event instanceof DeadlineWasAddedToTodo) {
+            return 'whenDeadlineWasAddedToTodo';
         }
 
         return '';

@@ -14,7 +14,7 @@ class StreamName
         $this->name = $name;
     }
 
-    public function getName() : string
+    public function name() : string
     {
         return $this->name;
     }
