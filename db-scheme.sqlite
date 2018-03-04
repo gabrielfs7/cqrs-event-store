@@ -1,8 +1,26 @@
 DROP TABLE IF EXISTS todo;
+DROP TABLE IF EXISTS event;
 
+/*
+ * Table responsible for saving TODO registries
+ */
 CREATE TABLE IF NOT EXISTS todo (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   text VARCHAR NOT NULL,
   status VARCHAR NOT NULL,
+  deadline DATETIME DEFAULT NULL,
   assignee_id INTEGER NOT NULL
+);
+
+/*
+ * Table responsible for saving events for Event Storing
+ */
+CREATE TABLE IF NOT EXISTS event (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  version INTEGER NOT NULL,
+  name VARCHAR NOT NULL,
+  stream_name VARCHAR NOT NULL,
+  requested_at DATETIME NOT NULL,
+  applied_at DATETIME DEFAULT NULL,
+  body VARCHAR NOT NULL
 );

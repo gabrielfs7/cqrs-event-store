@@ -2,12 +2,14 @@
 
 namespace Cqrs;
 
+use Cqrs\Todo\DeadlineWasAddedToTodo;
 use Cqrs\Todo\TodoWasMarkedAsDone;
 use Cqrs\Todo\TodoWasPosted;
 use Cqrs\Todo\TodoWasReopened;
 
 class TodoProjector
 {
+
     /**
      * @var Connection
      */
@@ -17,6 +19,11 @@ class TodoProjector
      * @var string
      */
     private $table = 'todo';
+
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
 
     public function onTodoWasPosted(TodoWasPosted $event) : void
     {
@@ -42,13 +49,24 @@ class TodoProjector
         );
     }
 
+    public function onDeadlineWasAddedToTodo(DeadlineWasAddedToTodo $event) : void
+    {
+        $this->connection->update(
+            $this->table,
+            [
+                'id' => $event->todoId()->toString(),
+                'deadline' => $event->deadline()->format('Y-m-d H:i:s')
+            ]
+        );
+    }
+
     public function onTodoWasReopened(TodoWasReopened $event) : void
     {
         $this->connection->update(
             $this->table,
             [
                 'id' => $event->todoId()->toString(),
-                'status' => $event->totoStatus()->toString()
+                'status' => $event->todoStatus()->toString()
             ]
         );
     }

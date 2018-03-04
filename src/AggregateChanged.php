@@ -16,4 +16,9 @@ class AggregateChanged
 
         return $this;
     }
+
+    public function version() : string
+    {
+        return $this->version;
+    }
 }

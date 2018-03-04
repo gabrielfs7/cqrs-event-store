@@ -8,6 +8,26 @@ use stdClass;
 class Connection
 {
 
+    /**
+     * @var PDO
+     */
+    private $connection;
+
+    public function beginTransaction() : void
+    {
+       $this->connect()->beginTransaction();
+    }
+
+    public function commit() : void
+    {
+        $this->connect()->commit();
+    }
+
+    public function rollBack() : void
+    {
+        $this->connect()->rollBack();
+    }
+
     public function migrate(string $file) : void
     {
         $this->connect()->exec(file_get_contents($file));
@@ -76,14 +96,13 @@ class Connection
 
     private function connect() : PDO
     {
-        static $connection;
-
-        if ($connection) {
-            return $connection;
+        if ($this->connection) {
+            return $this->connection;
         }
 
         $db = realpath(
             __DIR__ .
+            DIRECTORY_SEPARATOR .
             '..' .
             DIRECTORY_SEPARATOR .
             'storage' .
@@ -91,7 +110,7 @@ class Connection
             'db.sqlite'
         );
 
-        return $connection = new PDO(
+        return $this->connection = new PDO(
             "sqlite:$db",
             null,
             null,

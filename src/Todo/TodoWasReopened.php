@@ -31,7 +31,7 @@ class TodoWasReopened extends AggregateChanged
         return $this->todoId;
     }
 
-    public function totoStatus(): TodoStatus
+    public function todoStatus(): TodoStatus
     {
         return $this->status;
     }

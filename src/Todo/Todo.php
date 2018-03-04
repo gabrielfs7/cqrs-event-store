@@ -36,7 +36,7 @@ class Todo extends AggregateRoot
      */
     private $text;
 
-    public function post(string $text, UserId $assigneeId, TodoId $todoId) : self
+    public static function post(string $text, UserId $assigneeId, TodoId $todoId) : self
     {
         $self = new self();
         $self->assertText($text);
@@ -76,7 +76,6 @@ class Todo extends AggregateRoot
         );
     }
 
-
     public function markAsDone() : void
     {
         $this->recordThat(
@@ -102,6 +101,11 @@ class Todo extends AggregateRoot
         $this->deadline = $event->deadline();
     }
 
+    protected function whenTodoWasReopened(TodoWasReopened $event) : void
+    {
+        $this->status = $event->todoStatus();
+    }
+
     protected function determineEventHandlerMethodFor(AggregateChanged $event) : string
     {
         if ($event instanceof TodoWasMarkedAsDone) {
@@ -110,6 +114,10 @@ class Todo extends AggregateRoot
 
         if ($event instanceof TodoWasPosted) {
             return 'whenTodoWasPosted';
+        }
+
+        if ($event instanceof TodoWasReopened) {
+            return 'whenTodoWasReopened';
         }
 
         if ($event instanceof DeadlineWasAddedToTodo) {
@@ -121,7 +129,7 @@ class Todo extends AggregateRoot
 
     private function assertText($text) : void
     {
-        if (is_string($text)) {
+        if (!is_string($text)) {
             throw new \InvalidArgumentException('Invalid todo text');
         }
     }

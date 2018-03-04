@@ -25,7 +25,7 @@ class TodoStatus
 
     public static function done() : self
     {
-        return new self(self::OPEN);
+        return new self(self::DONE);
     }
 
     public function isDone() : bool

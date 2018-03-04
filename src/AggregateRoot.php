@@ -2,13 +2,20 @@
 
 namespace Cqrs;
 
+use ArrayIterator;
+
 abstract class AggregateRoot
 {
     protected $version = 0;
 
     protected $recordedEvents = [];
 
-    protected static function reconstituteFromHistory(\Iterator $historyEvents) : self
+    public function getEvents() : ArrayIterator
+    {
+        return new ArrayIterator($this->recordedEvents);
+    }
+
+    public static function reconstituteFromHistory(\Iterator $historyEvents) : self
     {
         $instance = new static();
         $instance->replay($historyEvents);
@@ -18,6 +25,9 @@ abstract class AggregateRoot
 
     protected function replay(\Iterator $historyEvents) : void
     {
+        foreach ($historyEvents as $event) {
+            $this->recordThat($event);
+        }
     }
 
     protected function recordThat(AggregateChanged $event) : void
@@ -35,7 +45,8 @@ abstract class AggregateRoot
         if (!method_exists($this, $handler)) {
             throw new \RuntimeException(
                 sprintf(
-                    'Missing event handler method %s for aggregate root %s',
+                    'Missing event [%s] handler method [%s] for aggregate root [%s]',
+                    get_class($event),
                     $handler,
                     get_class($this)
                 )
